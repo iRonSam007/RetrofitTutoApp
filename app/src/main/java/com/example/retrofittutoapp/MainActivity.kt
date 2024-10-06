@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             RetrofitTutoAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
+                        name = "Android less Acti",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
