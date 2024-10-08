@@ -17,6 +17,9 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures{
+        viewBinding
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -45,4 +48,22 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+
+    // Retrofit and Gson Converter
+    implementation(libs.retrofit)
+    implementation(libs.retrofitGson)
+
+    // OkHttp and logging interceptor
+    implementation(libs.okhttp)
+
+    // Coroutines for background work
+    implementation(libs.coroutinesCore)
+    implementation(libs.coroutinesAndroid)
+
+    // Lifecycle components
+    implementation(libs.lifecycleViewmodel)
+    implementation(libs.lifecycleRuntime)
+
+
 }
