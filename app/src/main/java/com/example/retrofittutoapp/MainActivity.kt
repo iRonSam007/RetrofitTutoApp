@@ -1,47 +1,57 @@
 package com.example.retrofittutoapp
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.retrofittutoapp.ui.theme.RetrofitTutoAppTheme
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.retrofittutoapp.databinding.ActivityMainBinding
+import okio.IOException
+import retrofit2.HttpException
 
-class MainActivity : ComponentActivity() {
+const val TAG = "MainActivity"
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding : ActivityMainBinding
+    private lateinit var todoAdapter: TodoAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            RetrofitTutoAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setupRecyclerView()
+
+        lifecycleScope.launchWhenCreated {
+            binding.progressBar.isVisible = true
+            val response = try {
+                RetrofitInstance.api.getTodos()
+            }catch(e: IOException){
+                Log.e(TAG, "IO exception: no internet")
+                binding.progressBar.isVisible = false
+                return@launchWhenCreated
+            }catch (e: HttpException){
+                Log.e(TAG, "Http exception: unexpected response")
+                binding.progressBar.isVisible = false
+                return@launchWhenCreated //Da fuck does it mean
             }
+            if(response.isSuccessful && response.body() != null){
+                todoAdapter.todos = response.body()!!
+            }else {
+                Log.e(TAG, "Response not successful")
+            }
+            binding.progressBar.isVisible = false
         }
+
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RetrofitTutoAppTheme {
-        Greeting("Android")
+    private fun setupRecyclerView() = binding.rvTodos.apply {
+        todoAdapter = TodoAdapter() //Here: to review ()
+        adapter = todoAdapter
+        layoutManager = LinearLayoutManager(this@MainActivity)
     }
 }
