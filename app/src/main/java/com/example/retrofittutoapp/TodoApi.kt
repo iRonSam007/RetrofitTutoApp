@@ -9,7 +9,7 @@ import retrofit2.http.Query
 interface TodoApi {
 
 
-    @GET()
+    @GET("/todos")
     suspend fun getTodos(): Response<List<Todo>>
 
 
