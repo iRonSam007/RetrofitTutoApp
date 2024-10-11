@@ -15,6 +15,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -37,14 +38,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
-
-
-
 }
-
-
-
-
 
 dependencies {
     implementation(libs.androidx.core.ktx)
@@ -71,6 +65,5 @@ dependencies {
     // Lifecycle components
     implementation(libs.lifecycleViewmodel)
     implementation(libs.lifecycleRuntime)
-
 
 }
